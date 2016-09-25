@@ -38,9 +38,8 @@ constraint_2_regex([X], [0*, 1**X, 0*]) :- !.
 constraint_2_regex([H|T], [0*, 1**H| RegexTail]) :-
     constraint_2_regex_tail(T, RegexTail).
 
-sat_row(Row, Cs) :-
-    constraint_2_regex(Cs, RegCs),
-    phrase(regex(RegCs), Row),
+sat_row(Row, CsRegex) :-
+    phrase(regex(CsRegex), Row),
     labeling(Row).
 
 same_col_length([], _).
@@ -51,9 +50,11 @@ same_col_length([H|T], N) :-
 nonogram(Rows, RowCs, ColCs) :-
     length(RowCs, RowLen), length(Rows, RowLen),
     length(ColCs, ColLen), same_col_length(Rows, ColLen),
+    maplist(constraint_2_regex, RowCs, RowCsRegex),
+    maplist(constraint_2_regex, ColCs, ColCsRegex),
     transpose(Rows, Cols),
-    maplist(sat_row, Rows, RowCs),
-    maplist(sat_row, Cols, ColCs).
+    maplist(sat_row, Rows, RowCsRegex),
+    maplist(sat_row, Cols, ColCsRegex).
 
 test(1, _,
      [[], [3], [1, 1], [3], [1]],
