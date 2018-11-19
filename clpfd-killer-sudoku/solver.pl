@@ -10,8 +10,6 @@ region_constrain(Sums, X-Vs) :-
     all_distinct(Vs),
     sum(Vs, #=, Value).
 
-fourtyfive_relation(Vs) :- sum(Vs, #=, 45).
-
 killer_sudoku(Rows, Splits, Sums) :-
     length(Rows, 9), maplist(same_length(Rows), Rows),
     length(Splits, 9), maplist(same_length(Splits), Splits),
@@ -21,10 +19,8 @@ killer_sudoku(Rows, Splits, Sums) :-
     sort(1, @>=, Pairs, SortedPairs),
     group_pairs_by_key(SortedPairs, Regions),
     maplist(all_distinct, Rows),
-    maplist(fourtyfive_relation, Rows),
     transpose(Rows, Columns),
     maplist(all_distinct, Columns),
-    maplist(fourtyfive_relation, Columns),
     Rows = [As,Bs,Cs,Ds,Es,Fs,Gs,Hs,Is],
     blocks(As, Bs, Cs),blocks(Ds, Es, Fs),blocks(Gs, Hs, Is),
     maplist(region_constrain(Sums), Regions).
@@ -32,7 +28,6 @@ killer_sudoku(Rows, Splits, Sums) :-
 blocks([], [], []).
 blocks([N1,N2,N3|Ns1], [N4,N5,N6|Ns2], [N7,N8,N9|Ns3]) :-
     all_distinct([N1,N2,N3,N4,N5,N6,N7,N8,N9]),
-    N1 + N2 + N3 + N4 + N5 + N6 + N7 + N8 + N9 #= 45, 
     blocks(Ns1, Ns2, Ns3).
 
 
@@ -61,10 +56,8 @@ greater_killer_sudoku(Rows, Splits, Sums, Compares) :-
     sort(1, @>=, Pairs, SortedPairs),
     group_pairs_by_key(SortedPairs, Regions),
     maplist(all_distinct, Rows),
-    maplist(fourtyfive_relation, Rows),
     transpose(Rows, Columns),
     maplist(all_distinct, Columns),
-    maplist(fourtyfive_relation, Columns),
     Rows = [As,Bs,Cs,Ds,Es,Fs,Gs,Hs,Is],
     blocks(As, Bs, Cs),blocks(Ds, Es, Fs),blocks(Gs, Hs, Is),
     maplist(compare_constrain(Regions), Compares),
